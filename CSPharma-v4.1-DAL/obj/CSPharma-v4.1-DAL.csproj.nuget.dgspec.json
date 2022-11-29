@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Sergio DC\\vs2022-workspace\\CSPharma-v4.1-DAL\\CSPharma-v4.1-DAL.csproj": {}
+    "C:\\Users\\Sergio DC\\Desktop\\CSPharma-v4.2\\CSPharma-v4.1-DAL\\CSPharma-v4.1-DAL.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Sergio DC\\vs2022-workspace\\CSPharma-v4.1-DAL\\CSPharma-v4.1-DAL.csproj": {
+    "C:\\Users\\Sergio DC\\Desktop\\CSPharma-v4.2\\CSPharma-v4.1-DAL\\CSPharma-v4.1-DAL.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Sergio DC\\vs2022-workspace\\CSPharma-v4.1-DAL\\CSPharma-v4.1-DAL.csproj",
+        "projectUniqueName": "C:\\Users\\Sergio DC\\Desktop\\CSPharma-v4.2\\CSPharma-v4.1-DAL\\CSPharma-v4.1-DAL.csproj",
         "projectName": "CSPharma-v4.1-DAL",
-        "projectPath": "C:\\Users\\Sergio DC\\vs2022-workspace\\CSPharma-v4.1-DAL\\CSPharma-v4.1-DAL.csproj",
+        "projectPath": "C:\\Users\\Sergio DC\\Desktop\\CSPharma-v4.2\\CSPharma-v4.1-DAL\\CSPharma-v4.1-DAL.csproj",
         "packagesPath": "C:\\Users\\Sergio DC\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Sergio DC\\vs2022-workspace\\CSPharma-v4.1-DAL\\obj\\",
+        "outputPath": "C:\\Users\\Sergio DC\\Desktop\\CSPharma-v4.2\\CSPharma-v4.1-DAL\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Sergio DC\\AppData\\Roaming\\NuGet\\NuGet.Config",

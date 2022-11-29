@@ -3,8 +3,9 @@
 - [CSPharma-v4.2.0](#cspharma-v420)
   - [Introducción](#introducción)
 - [1. Agregar la identidad del Login y el Register con Scaffold](#1-agregar-la-identidad-del-login-y-el-register-con-scaffold)
-- [2. Añadir el botón de Login en el *_Layout.cshtml* (enrutar nuevo componente)](#2-añadir-el-botón-de-login-en-el-_layoutcshtml-enrutar-nuevo-componente)
-  - [*_Layout.cshtml*](#_layoutcshtml)
+    - [*UserAuthenticaion.cs* (actualmente como *ApplicationUser.cs*)](#userauthenticaioncs-actualmente-como-applicationusercs)
+- [2. Añadir el botón de Login en el *\_Layout.cshtml* (enrutar nuevo componente)](#2-añadir-el-botón-de-login-en-el-_layoutcshtml-enrutar-nuevo-componente)
+  - [*\_Layout.cshtml*](#_layoutcshtml)
 - [3. Añadir los campos de UsuarioNombre y UsuarioApellidos](#3-añadir-los-campos-de-usuarionombre-y-usuarioapellidos)
   - [3.1. UserAuthentication.cs](#31-userauthenticationcs)
   - [3.2. LoginRegisterContext.cs](#32-loginregistercontextcs)
@@ -12,8 +13,10 @@
 - [Observaciones 1](#observaciones-1)
   - [3.4. Register.cshtml.cs](#34-registercshtmlcs)
   - [3.5. Register.cshtml](#35-registercshtml)
-  - [3.6. Register.cshtml.cs --> OnPostAsync()](#36-registercshtmlcs----onpostasync)
+  - [3.6. Register.cshtml.cs --\> OnPostAsync()](#36-registercshtmlcs----onpostasync)
   - [3.7. Prueba de registro de usuario](#37-prueba-de-registro-de-usuario)
+- [Actualizaciones del proyecto](#actualizaciones-del-proyecto)
+  - [Re-Migration - Cambiando los nombres por defecto de las tablas de Scaffold-Identity](#re-migration---cambiando-los-nombres-por-defecto-de-las-tablas-de-scaffold-identity)
 
 ## Introducción
 
@@ -50,6 +53,22 @@ Por último, tenemos que decirle el nombre de la clase controladora que Scaffold
 Podemos apreciar que Scaffold nos ha creado un nuevo directorio llamado *Areas* el cual contiene los archivos necesarios para las características que le habíamos pedido que autogenerase.
 
 ![](./img/8.png)
+
+**Nota**: La clase de *UserAuthentication.cs* la he creado yo mismo manualmente.
+
+**Nota**: La clase de *UserAuthentication.cs* ha sido renombrada actualmente a *ApplicationUser.cs*
+
+### *UserAuthenticaion.cs* (actualmente como *ApplicationUser.cs*)
+
+```csharp
+namespace CSPharma_v4._1.Areas.Identity.Data;
+
+// Add profile data for application users by adding properties to the UserAuthentication class
+public class ApplicationUser : IdentityUser
+{
+    // aquí van los nuevos campos que quieras añadir a la tabla de usuarios (empleados)
+}
+```
 
 # 2. Añadir el botón de Login en el *_Layout.cshtml* (enrutar nuevo componente)
 
@@ -154,12 +173,15 @@ public class UserAuthentication : IdentityUser
 using CSPharma_v4._1.Areas.Identity.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Reflection.Emit;
 
 namespace CSPharma_v4._1.Areas.Identity.Data;
 
-public class LoginRegisterContext : IdentityDbContext<UserAuthentication>
+public class LoginRegisterContext : IdentityDbContext<ApplicationUser>
 {
     public LoginRegisterContext(DbContextOptions<LoginRegisterContext> options)
         : base(options)
@@ -169,21 +191,28 @@ public class LoginRegisterContext : IdentityDbContext<UserAuthentication>
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
-        // Customize the ASP.NET Identity model and override the defaults if needed.
-        // For example, you can rename the ASP.NET Identity table names and more.
-        // Add your customizations after calling base.OnModelCreating(builder);
-
         builder.ApplyConfiguration(new UserEntityConfiguration());
-
         builder.HasDefaultSchema("dlk_torrecontrol");
 
-        // builder.Entity<IdentityUser>().ToTable("Dlk_cat_acc_empleados");
+        /*************************** to change the table names ***************************/
+        // builder.Entity<IdentityUser>().ToTable("Dlk_cat_acc_empleados"); // esto da error luego
+        // https://stackoverflow.com/questions/19460386/how-can-i-change-the-table-names-when-using-asp-net-identity
+        builder.Entity<ApplicationUser>().ToTable("Dlk_cat_acc_empleados");
+        builder.Entity<IdentityRole>().ToTable("Dlk_cat_acc_roles");
+
+        // Error: Using the generic type 'IdentityUserRole<TKey>' requires 1 type arguments
+        // https://stackoverflow.com/questions/54283342/using-the-generic-type-identityuserroletkey-requires-1-type-arguments
+        builder.Entity<IdentityUserRole<string>>().ToTable("Dlk_cat_acc_empleados_roles");
+        builder.Entity<IdentityRoleClaim<string>>().ToTable("Dlk_cat_acc_claim_roles");
+        builder.Entity<IdentityUserClaim<string>>().ToTable("Dlk_cat_acc_claim_empleados");
+        builder.Entity<IdentityUserLogin<string>>().ToTable("Dlk_cat_acc_login_empleados");
+        builder.Entity<IdentityUserToken<string>>().ToTable("Dlk_cat_acc_token_empleados");
     }
 }
 
-public class UserEntityConfiguration : IEntityTypeConfiguration<UserAuthentication>
+public class UserEntityConfiguration : IEntityTypeConfiguration<ApplicationUser>
 {
-    public void Configure(EntityTypeBuilder<UserAuthentication> builder)
+    public void Configure(EntityTypeBuilder<ApplicationUser> builder)
     {
         builder.Property(usuario => usuario.UsuarioNombre).HasMaxLength(255);
         builder.Property(usuario => usuario.UsuarioApellidos).HasMaxLength(255);
@@ -195,7 +224,7 @@ Con `builder.HasDefaultSchema()` podemos añadir un nuevo esquema a la BBDD, en 
 
 Con `builder.Property()` podemos añadir nuevos campos al modelo de usuario que Scaffold tiene por defecto.
 
-Con `builder.Entity<IdentityUser>().ToTable()` podemos cambiar el nombre de la futura tabla en la BBDD de la clase modelo IdentityUser, la cual pasaría de llamarse "AspNetUsers" a "Dlk_cat_acc_empleados". 
+Con `builder.Entity<UserAuthentication>().ToTable()` podemos cambiar el nombre de la futura tabla en la BBDD de la clase usuario (modelo) IdentityUser (utilizando nuestro *<UserAuthentication>*, el cual actualmente lo tengo renombrado a *<ApplicationUser>*), la cual pasaría de llamarse "AspNetUsers" a "Dlk_cat_acc_empleados". 
 
 **Nota**: si en la clase de *UserAuthentication.cs*, pulsamos Control y hacemos click sobre la clase padre de *IdentityUser*, podemos ver que el usuario por defecto de Scaffold tendrá los siguientes campos:
 
@@ -268,21 +297,13 @@ public virtual int AccessFailedCount { get; set; }
 --- |
 | Id, UserName, NormalizedUserName, Email, NormalizedEmail, EmailConfirmed, PasswordHash, SecurityStamp, ConcurrencyStamp, PhoneNumber, PhoneNumberConfirmed, TwoFactorEnabled, LockoutEnd, LockoutEnabled, AccessFailedCount |
 
-Esta última tabla de AspNetUsers es la principal, la que Scaffold llama IdentityUser, y en la que nosotros hemso añadido los campos de UsuarioNombre y UsuarioApellidos.
+**Nota**: los nombres de estas tablas son los nombres con los que se crean por defecto, pero si en el contexto hemos especificado otro nombre con el modelBuilder (fluent API), entonces los nombres que encontraremos en las tablas serán efectivamente los que nosotros habíamos definido antes en el contexto.
+
+Esta última tabla de AspNetUsers es la principal, la que Scaffold llama IdentityUser, y en la que nosotros hemos añadido los campos de UsuarioNombre y UsuarioApellidos.
 
 Podríamos cambiar el nombre de las tablas volviendo a hacer uso de Fluent API, es decir, del ModelBuilder en la sobreescritura de su método OnModelCreating().
 
 ![](./img/15.png)
-
-**Nota**: a mí esto de cambiarle el nombre a esa tabla, desde Fluent API (ModelBuilder) no me ha funcionado. Crea otra aparte del tipo IdentityUser que la llama como nosotros queremos (Dlk_cat_acc_empleados), pero siempre acaba creando la original de IdentityUser llamada AspNetUsers, que es en la que realmente se acaban añadiendo nuestros campos extras de UsuarioNombre y UsuarioApellidos... así que al final lo he resuelto, cambiando el nombre de la tabla en el archivo de la migración, antes de hacer el Update-database. En el archivo de la migración, hacer Control F, y reemplazar todos los "AspNetUsers" por "Dlk_cat_acc_empleados".
-
-![](./img/16.png)
-
-![](./img/17.png)
-
-**Atención**: mejor no cambiar el nombre de las tablas que crea Scaffold (como la de AspNetUsers) porque después nos podemos encontrar con errores como este:
-
-![](./img/20.png)
 
 # 3.3. Hacemos una migración con el nuevo contexto
 
@@ -302,9 +323,7 @@ Esta arquitectura automática es mejor dejarla como está y no cambiarla, ya que
 
 La nueva migración de CodeFirst que se hace en el proyecto principal, no pisaría la otra migración que hicimos en la capa DAL, ya que son proyectos diferentes (pero referenciados), y cada migración tiene su propio contexto y esquema.
 
-Para cambiar el nombre por defecto con el que se crearía una tabla, se usa ModelBuilder en el contexto en el método de sobreescritura del OnModelCreating(). Pero si esto no funcionase, se podría acudir al archivo de la migración, para cambiar el nombre de la tabla por defecto al nuevo que queramos ponerle. Podemos cambiar todos aquellos lugares donde aprezca el nombre por defecto de la tabla con Control F.
-
-**Nota**: mejor no cambiar el nombre de las tablas que crea Scaffold (como la de AspNetUsers) porque después nos podemos encontrar con algunos errores como el antes descrito.
+Para cambiar el nombre por defecto con el que se crearía una tabla, se usa ModelBuilder en el contexto en el método de sobreescritura del OnModelCreating().
 
 ![](./img/21.png)
 
@@ -425,8 +444,6 @@ builder.Services.AddDefaultIdentity<UserAuthentication>(options => options.SignI
 
 ![](./img/24.png)
 
-![](./img/25.png)
-
 ![](./img/26.png)
 
 Podemos apreciar que Scaffold ha incluído por defecto funcionalidades que nosotros no habíamos elegido (como el reset password) o que nosotros aún no hemos añadido...
@@ -438,3 +455,9 @@ Así que vamos a probar a añadir TODAS las características de Scaffold-Identit
 ![](./img/28.png)
 
 ![](./img/29.png)
+
+# Actualizaciones del proyecto
+
+## Re-Migration - Cambiando los nombres por defecto de las tablas de Scaffold-Identity
+
+[prueba de ejecución después de hacer de nuevo la migración y de cambiar los nombres de las tablas](https://github.com/csi21-sdiapos/CSPharma-v4.2/issues/2)

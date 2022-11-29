@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CSPharma_v4._1.Migrations
 {
     [DbContext(typeof(LoginRegisterContext))]
-    [Migration("20221113215918_migracion-dlk-1")]
-    partial class migraciondlk1
+    [Migration("20221129124229_dlk-migracion-1")]
+    partial class dlkmigracion1
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -25,7 +25,7 @@ namespace CSPharma_v4._1.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("CSPharma_v4._1.Areas.Identity.Data.UserAuthentication", b =>
+            modelBuilder.Entity("CSPharma_v4._1.Areas.Identity.Data.ApplicationUser", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("text");
@@ -96,7 +96,7 @@ namespace CSPharma_v4._1.Migrations
                         .IsUnique()
                         .HasDatabaseName("UserNameIndex");
 
-                    b.ToTable("AspNetUsers", "dlk_torrecontrol");
+                    b.ToTable("Dlk_cat_acc_empleados", "dlk_torrecontrol");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -122,7 +122,7 @@ namespace CSPharma_v4._1.Migrations
                         .IsUnique()
                         .HasDatabaseName("RoleNameIndex");
 
-                    b.ToTable("AspNetRoles", "dlk_torrecontrol");
+                    b.ToTable("Dlk_cat_acc_roles", "dlk_torrecontrol");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -147,7 +147,7 @@ namespace CSPharma_v4._1.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("AspNetRoleClaims", "dlk_torrecontrol");
+                    b.ToTable("Dlk_cat_acc_claim_roles", "dlk_torrecontrol");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
@@ -172,7 +172,7 @@ namespace CSPharma_v4._1.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("AspNetUserClaims", "dlk_torrecontrol");
+                    b.ToTable("Dlk_cat_acc_claim_empleados", "dlk_torrecontrol");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
@@ -196,7 +196,7 @@ namespace CSPharma_v4._1.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("AspNetUserLogins", "dlk_torrecontrol");
+                    b.ToTable("Dlk_cat_acc_login_empleados", "dlk_torrecontrol");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
@@ -211,7 +211,7 @@ namespace CSPharma_v4._1.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("AspNetUserRoles", "dlk_torrecontrol");
+                    b.ToTable("Dlk_cat_acc_empleados_roles", "dlk_torrecontrol");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
@@ -232,7 +232,7 @@ namespace CSPharma_v4._1.Migrations
 
                     b.HasKey("UserId", "LoginProvider", "Name");
 
-                    b.ToTable("AspNetUserTokens", "dlk_torrecontrol");
+                    b.ToTable("Dlk_cat_acc_token_empleados", "dlk_torrecontrol");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -246,7 +246,7 @@ namespace CSPharma_v4._1.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("CSPharma_v4._1.Areas.Identity.Data.UserAuthentication", null)
+                    b.HasOne("CSPharma_v4._1.Areas.Identity.Data.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -255,7 +255,7 @@ namespace CSPharma_v4._1.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("CSPharma_v4._1.Areas.Identity.Data.UserAuthentication", null)
+                    b.HasOne("CSPharma_v4._1.Areas.Identity.Data.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -270,7 +270,7 @@ namespace CSPharma_v4._1.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("CSPharma_v4._1.Areas.Identity.Data.UserAuthentication", null)
+                    b.HasOne("CSPharma_v4._1.Areas.Identity.Data.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -279,7 +279,7 @@ namespace CSPharma_v4._1.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("CSPharma_v4._1.Areas.Identity.Data.UserAuthentication", null)
+                    b.HasOne("CSPharma_v4._1.Areas.Identity.Data.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)

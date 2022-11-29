@@ -6,7 +6,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace CSPharma_v4._1.Migrations
 {
-    public partial class migraciondlk1 : Migration
+    public partial class dlkmigracion1 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -14,22 +14,7 @@ namespace CSPharma_v4._1.Migrations
                 name: "dlk_torrecontrol");
 
             migrationBuilder.CreateTable(
-                name: "AspNetRoles",
-                schema: "dlk_torrecontrol",
-                columns: table => new
-                {
-                    Id = table.Column<string>(type: "text", nullable: false),
-                    Name = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
-                    NormalizedName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
-                    ConcurrencyStamp = table.Column<string>(type: "text", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AspNetRoles", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "AspNetUsers",
+                name: "Dlk_cat_acc_empleados",
                 schema: "dlk_torrecontrol",
                 columns: table => new
                 {
@@ -53,11 +38,93 @@ namespace CSPharma_v4._1.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                    table.PrimaryKey("PK_Dlk_cat_acc_empleados", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "AspNetRoleClaims",
+                name: "Dlk_cat_acc_roles",
+                schema: "dlk_torrecontrol",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "text", nullable: false),
+                    Name = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
+                    NormalizedName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
+                    ConcurrencyStamp = table.Column<string>(type: "text", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Dlk_cat_acc_roles", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Dlk_cat_acc_claim_empleados",
+                schema: "dlk_torrecontrol",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    UserId = table.Column<string>(type: "text", nullable: false),
+                    ClaimType = table.Column<string>(type: "text", nullable: true),
+                    ClaimValue = table.Column<string>(type: "text", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Dlk_cat_acc_claim_empleados", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Dlk_cat_acc_claim_empleados_Dlk_cat_acc_empleados_UserId",
+                        column: x => x.UserId,
+                        principalSchema: "dlk_torrecontrol",
+                        principalTable: "Dlk_cat_acc_empleados",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Dlk_cat_acc_login_empleados",
+                schema: "dlk_torrecontrol",
+                columns: table => new
+                {
+                    LoginProvider = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: false),
+                    ProviderKey = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: false),
+                    ProviderDisplayName = table.Column<string>(type: "text", nullable: true),
+                    UserId = table.Column<string>(type: "text", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Dlk_cat_acc_login_empleados", x => new { x.LoginProvider, x.ProviderKey });
+                    table.ForeignKey(
+                        name: "FK_Dlk_cat_acc_login_empleados_Dlk_cat_acc_empleados_UserId",
+                        column: x => x.UserId,
+                        principalSchema: "dlk_torrecontrol",
+                        principalTable: "Dlk_cat_acc_empleados",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Dlk_cat_acc_token_empleados",
+                schema: "dlk_torrecontrol",
+                columns: table => new
+                {
+                    UserId = table.Column<string>(type: "text", nullable: false),
+                    LoginProvider = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: false),
+                    Name = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: false),
+                    Value = table.Column<string>(type: "text", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Dlk_cat_acc_token_empleados", x => new { x.UserId, x.LoginProvider, x.Name });
+                    table.ForeignKey(
+                        name: "FK_Dlk_cat_acc_token_empleados_Dlk_cat_acc_empleados_UserId",
+                        column: x => x.UserId,
+                        principalSchema: "dlk_torrecontrol",
+                        principalTable: "Dlk_cat_acc_empleados",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Dlk_cat_acc_claim_roles",
                 schema: "dlk_torrecontrol",
                 columns: table => new
                 {
@@ -69,63 +136,18 @@ namespace CSPharma_v4._1.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_AspNetRoleClaims", x => x.Id);
+                    table.PrimaryKey("PK_Dlk_cat_acc_claim_roles", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_AspNetRoleClaims_AspNetRoles_RoleId",
+                        name: "FK_Dlk_cat_acc_claim_roles_Dlk_cat_acc_roles_RoleId",
                         column: x => x.RoleId,
                         principalSchema: "dlk_torrecontrol",
-                        principalTable: "AspNetRoles",
+                        principalTable: "Dlk_cat_acc_roles",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "AspNetUserClaims",
-                schema: "dlk_torrecontrol",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    UserId = table.Column<string>(type: "text", nullable: false),
-                    ClaimType = table.Column<string>(type: "text", nullable: true),
-                    ClaimValue = table.Column<string>(type: "text", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AspNetUserClaims", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_AspNetUserClaims_AspNetUsers_UserId",
-                        column: x => x.UserId,
-                        principalSchema: "dlk_torrecontrol",
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "AspNetUserLogins",
-                schema: "dlk_torrecontrol",
-                columns: table => new
-                {
-                    LoginProvider = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: false),
-                    ProviderKey = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: false),
-                    ProviderDisplayName = table.Column<string>(type: "text", nullable: true),
-                    UserId = table.Column<string>(type: "text", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AspNetUserLogins", x => new { x.LoginProvider, x.ProviderKey });
-                    table.ForeignKey(
-                        name: "FK_AspNetUserLogins_AspNetUsers_UserId",
-                        column: x => x.UserId,
-                        principalSchema: "dlk_torrecontrol",
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "AspNetUserRoles",
+                name: "Dlk_cat_acc_empleados_roles",
                 schema: "dlk_torrecontrol",
                 columns: table => new
                 {
@@ -134,118 +156,96 @@ namespace CSPharma_v4._1.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_AspNetUserRoles", x => new { x.UserId, x.RoleId });
+                    table.PrimaryKey("PK_Dlk_cat_acc_empleados_roles", x => new { x.UserId, x.RoleId });
                     table.ForeignKey(
-                        name: "FK_AspNetUserRoles_AspNetRoles_RoleId",
+                        name: "FK_Dlk_cat_acc_empleados_roles_Dlk_cat_acc_empleados_UserId",
+                        column: x => x.UserId,
+                        principalSchema: "dlk_torrecontrol",
+                        principalTable: "Dlk_cat_acc_empleados",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Dlk_cat_acc_empleados_roles_Dlk_cat_acc_roles_RoleId",
                         column: x => x.RoleId,
                         principalSchema: "dlk_torrecontrol",
-                        principalTable: "AspNetRoles",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_AspNetUserRoles_AspNetUsers_UserId",
-                        column: x => x.UserId,
-                        principalSchema: "dlk_torrecontrol",
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "AspNetUserTokens",
-                schema: "dlk_torrecontrol",
-                columns: table => new
-                {
-                    UserId = table.Column<string>(type: "text", nullable: false),
-                    LoginProvider = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: false),
-                    Name = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: false),
-                    Value = table.Column<string>(type: "text", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AspNetUserTokens", x => new { x.UserId, x.LoginProvider, x.Name });
-                    table.ForeignKey(
-                        name: "FK_AspNetUserTokens_AspNetUsers_UserId",
-                        column: x => x.UserId,
-                        principalSchema: "dlk_torrecontrol",
-                        principalTable: "AspNetUsers",
+                        principalTable: "Dlk_cat_acc_roles",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_AspNetRoleClaims_RoleId",
+                name: "IX_Dlk_cat_acc_claim_empleados_UserId",
                 schema: "dlk_torrecontrol",
-                table: "AspNetRoleClaims",
-                column: "RoleId");
-
-            migrationBuilder.CreateIndex(
-                name: "RoleNameIndex",
-                schema: "dlk_torrecontrol",
-                table: "AspNetRoles",
-                column: "NormalizedName",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_AspNetUserClaims_UserId",
-                schema: "dlk_torrecontrol",
-                table: "AspNetUserClaims",
+                table: "Dlk_cat_acc_claim_empleados",
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_AspNetUserLogins_UserId",
+                name: "IX_Dlk_cat_acc_claim_roles_RoleId",
                 schema: "dlk_torrecontrol",
-                table: "AspNetUserLogins",
-                column: "UserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_AspNetUserRoles_RoleId",
-                schema: "dlk_torrecontrol",
-                table: "AspNetUserRoles",
+                table: "Dlk_cat_acc_claim_roles",
                 column: "RoleId");
 
             migrationBuilder.CreateIndex(
                 name: "EmailIndex",
                 schema: "dlk_torrecontrol",
-                table: "AspNetUsers",
+                table: "Dlk_cat_acc_empleados",
                 column: "NormalizedEmail");
 
             migrationBuilder.CreateIndex(
                 name: "UserNameIndex",
                 schema: "dlk_torrecontrol",
-                table: "AspNetUsers",
+                table: "Dlk_cat_acc_empleados",
                 column: "NormalizedUserName",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Dlk_cat_acc_empleados_roles_RoleId",
+                schema: "dlk_torrecontrol",
+                table: "Dlk_cat_acc_empleados_roles",
+                column: "RoleId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Dlk_cat_acc_login_empleados_UserId",
+                schema: "dlk_torrecontrol",
+                table: "Dlk_cat_acc_login_empleados",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "RoleNameIndex",
+                schema: "dlk_torrecontrol",
+                table: "Dlk_cat_acc_roles",
+                column: "NormalizedName",
                 unique: true);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "AspNetRoleClaims",
+                name: "Dlk_cat_acc_claim_empleados",
                 schema: "dlk_torrecontrol");
 
             migrationBuilder.DropTable(
-                name: "AspNetUserClaims",
+                name: "Dlk_cat_acc_claim_roles",
                 schema: "dlk_torrecontrol");
 
             migrationBuilder.DropTable(
-                name: "AspNetUserLogins",
+                name: "Dlk_cat_acc_empleados_roles",
                 schema: "dlk_torrecontrol");
 
             migrationBuilder.DropTable(
-                name: "AspNetUserRoles",
+                name: "Dlk_cat_acc_login_empleados",
                 schema: "dlk_torrecontrol");
 
             migrationBuilder.DropTable(
-                name: "AspNetUserTokens",
+                name: "Dlk_cat_acc_token_empleados",
                 schema: "dlk_torrecontrol");
 
             migrationBuilder.DropTable(
-                name: "AspNetRoles",
+                name: "Dlk_cat_acc_roles",
                 schema: "dlk_torrecontrol");
 
             migrationBuilder.DropTable(
-                name: "AspNetUsers",
+                name: "Dlk_cat_acc_empleados",
                 schema: "dlk_torrecontrol");
         }
     }

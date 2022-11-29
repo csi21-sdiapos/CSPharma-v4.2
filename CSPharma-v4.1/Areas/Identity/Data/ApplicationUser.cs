@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Identity;
 namespace CSPharma_v4._1.Areas.Identity.Data;
 
 // Add profile data for application users by adding properties to the UserAuthentication class
-public class UserAuthentication : IdentityUser
+public class ApplicationUser : IdentityUser
 {
     public string UsuarioNombre { get; set; }
     public string UsuarioApellidos { get; set; }

@@ -1,8 +1,8 @@
 ﻿@using Microsoft.AspNetCore.Identity
 @using CSPharma_v4._1.Areas.Identity.Data
 
-@inject SignInManager<UserAuthentication> SignInManager
-@inject UserManager<UserAuthentication> UserManager
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
 
 <ul class="navbar-nav">
 @if (SignInManager.IsSignedIn(User))
